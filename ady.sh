@@ -1,15 +1,15 @@
 #!/bin/bash
 
-source myenv/bin/activate
-pip install .
+#source myenv/bin/activate
+#pip install .
 
-#yoyodyne-train \
-#  --model_dir results \
-#  --experiment ady_att_144 \
-#  --train ady/ady_train.tsv \
-#  --val ady/ady_dev.tsv \
-#  --arch attentive_lstm \
-#  --seed 144
+yoyodyne-train \
+  --model_dir results \
+  --experiment ady_att_144 \
+  --train ady/ady_train.tsv \
+  --val ady/ady_dev.tsv \
+  --arch attentive_lstm \
+  --seed 144
 
 yoyodyne-train \
   --model_dir results \
