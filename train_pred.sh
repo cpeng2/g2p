@@ -9,21 +9,21 @@ for ARCH in attentive_lstm pointer_generator_lstm \
   for SEED in 144 233 377 610 987; do
       yoyodyne-train \
         --model_dir results \
-        --experiment "ady_${ARCH}_${SEED}" \
-        --train ady/ady_train.tsv \
-        --val ady/ady_dev.tsv \
+        --experiment "eng_${ARCH}_${SEED}" \
+        --train data/celex_nettalk/train.tsv \
+        --val data/celex_nettalk/dev.tsv \
         --arch ${ARCH} \
         --seed "${SEED}"
       yoyodyne-predict \
         --model_dir results \
-        --experiment "ady_${ARCH}_${SEED}" \
-        --checkpoint results/ady_${ARCH}_${SEED}/version_0/checkpoints/*.ckpt \
-        --predict ady/ady_test.tsv \
+        --experiment "eng_${ARCH}_${SEED}" \
+        --checkpoint results/eng_${ARCH}_${SEED}/version_0/checkpoints/*.ckpt \
+        --predict data/celex_nettalk/test.tsv \
         --arch ${ARCH} \
-        --output results/ady_${ARCH}_${SEED}/pred_${ARCH}_${SEED}
+        --output results/eng_${ARCH}_${SEED}/pred_${ARCH}_${SEED}
       ./wer.py \
-        ady/ady_test.tsv \
-        results/ady_${ARCH}_${SEED}/pred_${ARCH}_${SEED}
+        data/celex_nettalk/test.tsv \
+        results/eng_${ARCH}_${SEED}/pred_${ARCH}_${SEED}
   done
 done
 
