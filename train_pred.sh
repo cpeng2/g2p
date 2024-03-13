@@ -1,37 +1,29 @@
 #!/usr/bin/env bash
 
+#python -m venv myenv
 source myenv/bin/activate
-pip install .
-#pip install --upgrade pip
+#pip install .
+#pip install wandb --upgrade
 
-for ARCH in attentive_lstm pointer_generator_lstm \
-            pointer_generator_transformer transducer transformer; do
-  for SEED in 144 233 377 610 987; do
-      yoyodyne-train \
+for SEED in 144 233 377 610 987; do
+    ./train_wandb_sweep.py \
+        --entity "g-p2p" \
+        --project "eng-celex-nettalk" \
+        --sweep_id "pwt3ffm1" \
+        --count "200" \
         --model_dir results \
-        --experiment "eng_${ARCH}_${SEED}" \
-        --train data/celex_nettalk/train.tsv \
-        --val data/celex_nettalk/dev.tsv \
-        --arch ${ARCH} \
-        --seed "${SEED}"
-      yoyodyne-predict \
+        --arch attentive_lstm \
+        --experiment "eng_attentive_lstm_${SEED}" \
+        --train tsv/eng/gp2p-CELEX-NETTalk-column-train.tsv \
+        --val tsv/eng/gp2p-CELEX-NETTalk-column-dev.tsv \
+        --target_col 3
+    yoyodyne-predict \
         --model_dir results \
-        --experiment "eng_${ARCH}_${SEED}" \
-        --checkpoint results/eng_${ARCH}_${SEED}/version_0/checkpoints/*.ckpt \
-        --predict data/celex_nettalk/test.tsv \
-        --arch ${ARCH} \
-        --output results/eng_${ARCH}_${SEED}/pred_${ARCH}_${SEED}
-      ./wer.py \
-        data/celex_nettalk/test.tsv \
-        results/eng_${ARCH}_${SEED}/pred_${ARCH}_${SEED}
-  done
+        --experiment "eng_attentive_lstm_${SEED}" \
+        --checkpoint results/eng_attentive_lstm_${SEED}/version_0/checkpoints/*.ckpt \
+        --arch attentive_lstm \
+        --predict tsv/eng/gp2p-CELEX-NETTalk-column-test.tsv \
+        --output results/eng_attentive_lstm_${SEED}/pred_attentive_lstm_${SEED}
+    evaulate.py \
+        --tsv_path results/eng_attentive_lstm_${SEED}/pred_attentive_lstm_${SEED}
 done
-
-"""
-# How to incoporate the following?
-# Creates a sweep; save the sweep ID as ${SWEEP_ID} for later.
-wandb sweep --entity "${ENTITY}" --project "${PROJECT}" config.yaml
-# Runs the sweep itself.
-./train_wandb_sweep.py --entity "${ENTITY}" --project "${PROJECT}" \
-     --sweep_id "${SWEEP_ID}" --count "${COUNT}" ...
-"""
