@@ -10,6 +10,7 @@ export VAL="tsv/eng/gp2p-CELEX-NETTalK-control-dev.tsv"
 export PREDICT="tsv/eng/gp2p-CELEX-NETTalk-control-test.tsv"
 export ARCH="transformer"
 
+# Finetune the hyperparameters
 export SEED=42
 ./sweep.py \
     --entity g-p2p \
